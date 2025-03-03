@@ -52,8 +52,8 @@ make -j
 ```
 
 ## Datasets
-+ [Argoverse 2 motion forcasting dataset](https://www.argoverse.org/av2.html): please refer to [/data/preprocess/argoverse2](/data/preprocess/argoverse2) to preprocess the raw data.
-+ [SIFT1M dataset](http://corpus-texmex.irisa.fr/): please refer to [/data/preprocess/sift1m](/data/preprocess/sift1m) to preprocess the raw data.
++ [Argoverse 2 motion forcasting dataset](https://www.argoverse.org/av2.html): please refer to [data/preprocess/argoverse2](/data/preprocess/argoverse2) to preprocess the raw data.
++ [SIFT1M dataset](http://corpus-texmex.irisa.fr/): please refer to [data/preprocess/sift1m](/data/preprocess/sift1m) to preprocess the raw data.
 
 After preprocessing, three binary files are generated: 
 + base_embeddings.bin: it contains all the base vectors and they are sorted in chronological order.
@@ -75,7 +75,7 @@ sudo apt install libgoogle-perftools-dev clang-format
 wget https://registrationcenter-download.intel.com/akdlm/irc_nas/18487/l_BaseKit_p_2022.1.2.146_offline.sh
 sudo sh ./l_BaseKit_p_2022.1.2.146_offline.sh
 ```
-For convenience, we provide a version of the oneAPI Base Toolkit dependency in [/ThirdParty](/ThirdParty).
+
 
 build FreshDiskANN:
 ```
