@@ -67,7 +67,7 @@ As the dataset for updating index shifts dynamically, the ground truths are also
 We modify some codes of the existing methods to make them support the input formats above. 
 #### 1 FreshDiskANN
 ##### Build
-clone the repostiory, install the dependencies and build:
+clone the repository, install the dependencies and build:
 ```
 git clone https://github.com/Ryanhya/Comparison_FreshDiskANN.git
 cd Comparison_FreshDiskANN
@@ -86,6 +86,15 @@ make -j
 ```
 
 #### 2 SPFresh
+##### Build
+clone the repository:
+```
+git clone https://github.com/Ryanhya/Comparison_SPFresh.git
+cd Comparison_SPFresh
+git submodule update --init --recursive
+```
+
+The installation of other dependencies is the same as UBIS. Please follow the same steps for installing spdk, isa-l_crypto and rocksdb.
 
 
 
