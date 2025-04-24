@@ -25,6 +25,7 @@ sudo ./scripts/pkgdep.sh
 ./configure
 make -j
 ```
+**Note:** The script "pkgdep.sh" is used to check the required dependencies in your environment. You can also use other scripts in the folder `/scripts/pkgdep/` to examine your local environment. For example, if you are running in the Ubuntu environment, you can use command `sudo ./scripts/pkgdep/debian.sh`.
 
 Install isa-l_crypto in your environment:
 ```
@@ -43,6 +44,9 @@ cmake -DUSE_RTTI=1 -DWITH_JEMALLOC=1 -DWITH_SNAPPY=1 -DCMAKE_C_COMPILER=gcc -DCM
 make -j
 sudo make install
 ```
+**Note:**
++ If some dependencies are missing, just use `apt` command to install them. For example, if the log shows that "could not find uring", then use `sudo apt -y install liburing-dev` to download the required dependency.
++ To compile rocksdb successfully, the version of g++ and gcc compilers is best to be 9 or 10. You can pass the target gcc/g++ version in the `cmake` command, such as `cmake -DUSE_RTTI=1 -DWITH_JEMALLOC=1 -DWITH_SNAPPY=1 -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-fPIC" .`
 
 Finally, build UBIS:
 ```
@@ -50,6 +54,7 @@ mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 make -j
 ```
+**Note:** The g++/gcc compiler should be consistent with that used for compiling rocksdb.
 
 ## Datasets
 + [Argoverse 2 motion forcasting dataset](https://www.argoverse.org/av2.html): please refer to [data/preprocess/argoverse2](/data/preprocess/argoverse2) to preprocess the raw data.
