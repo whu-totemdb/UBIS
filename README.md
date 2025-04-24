@@ -54,11 +54,13 @@ mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 make -j
 ```
-**Note:** The g++/gcc compiler should be consistent with that used for compiling rocksdb.
+**Note:** 
++ The gcc/g++ compiler should be consistent with that used for compiling rocksdb.
++ 2 executable files (**usefultool** & **ubis**) are used. Please refer to [the json file](.vscode/launch.json) to learn about how to run the programs. You should change the paths to the data files in your environment.
 
 ## Datasets
-+ [Argoverse 2 motion forcasting dataset](https://www.argoverse.org/av2.html): please refer to [data/preprocess/argoverse2](/data/preprocess/argoverse2) to preprocess the raw data.
-+ [SIFT1M dataset](http://corpus-texmex.irisa.fr/): please refer to [data/preprocess/sift1m](/data/preprocess/sift1m) to preprocess the raw data.
++ [Argoverse 2 motion forcasting dataset](https://www.argoverse.org/av2.html): please refer to [the codes](/data/preprocess/argoverse2) to preprocess the raw data.
++ [SIFT1M dataset](http://corpus-texmex.irisa.fr/): please refer to [the codes](/data/preprocess/sift1m) to preprocess the raw data.
 
 After preprocessing, three binary files are generated: 
 + base_embeddings.bin: it contains all the base vectors and they are sorted in chronological order.
