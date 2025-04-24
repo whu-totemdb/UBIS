@@ -11,7 +11,7 @@
 #include "inc/Helper/StringConvert.h"
 #include "inc/Core/Common/TruthSet.h"
 
-#include "inc/SPFresh/SPFresh.h"
+#include "inc/UBIS/UBIS.h"
  
 using namespace SPTAG;
 
@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
 	if (argc < 2)
 	{
 		LOG(Helper::LogLevel::LL_Error,
-			"spfresh storePath\n");
+			"storePath\n");
 		exit(-1);
 	}
 

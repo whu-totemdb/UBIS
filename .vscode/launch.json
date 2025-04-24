@@ -7,13 +7,13 @@
         
         
         {
-            "name": "spfresh",
+            "name": "ubis",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/Debug/spfresh",
+            "program": "${workspaceFolder}/Debug/ubis",
             "args": [
-                //"/home/lyh/SPFresh/Script_AE/configuration/argoverse2"                
-                "/home/lyh/SPFresh/Script_AE/configuration/sift1m"
+                "$HOME/UBIS/Scripts/configuration/argoverse2"                
+                //"$HOME/UBIS/Scripts/configuration/sift1m"
             ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -28,7 +28,7 @@
                 // },
                 // {
                 //     "name": "SPFRESH_SPDK_CONF",
-                //     "value": "/home/lyh/SPFresh/Script_AE/bdev.json"
+                //     "value": "$HOME/SPFresh/Scripts/bdev.json"
                 // },
                 // {
                 //     "name": "SPFRESH_SPDK_BDEV",
@@ -54,18 +54,22 @@
             "request": "launch",
             "program": "${workspaceFolder}/Debug/usefultool",
             "args": [
+                //如果最初始的文件不存在，先将batch设为0，configurePath置为空，先生成初始的文件
+                //随后设置batch为你想要的query向量数量，该程序会根据这个数量确定当前有效的base向量的数量，保存在相应的文件中，由CurrentListFileName，NewDataSetFileName和NewQueryDataSetFileName指定文件路径
+                //设置ConfigurePath，为构建初始索引的配置参数文件，在文件中记得修改文件路径为上一步的这些文件名与batch的组合，即可获取到这些base向量，随后利用这些base向量构建最初始的索引
+
                 "-BuildVector",
                 "true",
                 "--vectortype",
                 "float",
                 "--BaseVectorPath",
-                "/home/lyh/datasets/embeddings/test/base_embeddings.bin",
+                "$HOME/datasets/embeddings/test/base_embeddings.bin",
                 "--CurrentListFileName",               
-                "/home/lyh/datasets/embeddings/test/batches/base_embedding_ids",
+                "$HOME/datasets/embeddings/test/batches/base_embedding_ids",
                 "--QueryVectorPath",
-                "/home/lyh/datasets/embeddings/test/query_embeddings.bin",
+                "$HOME/datasets/embeddings/test/query_embeddings.bin",
                 "--BaseVectorSplitPath",
-                "/home/lyh/datasets/embeddings/test/query_vector_range.bin",
+                "$HOME/datasets/embeddings/test/query_vector_range.bin",
                 "--filetype",
                 "DEFAULT",
                 "--ride",
@@ -77,25 +81,25 @@
                 "--Batch",
                 "100",
                 "-NewDataSetFileName",              
-                "/home/lyh/datasets/embeddings/test/batches/base_embeddings",
+                "$HOME/datasets/embeddings/test/batches/base_embeddings",
                 "-NewQueryDataSetFileName",
-                "/home/lyh/datasets/embeddings/test/batches/query_embeddings",
+                "$HOME/datasets/embeddings/test/batches/query_embeddings",
                 "-ConfigurePath",
-                //"/home/lyh/SPFresh/Script_AE/configuration/argoverse2/build_base_index.ini"
-                "/home/lyh/SPFresh/Script_AE/configuration/sift1m/build_base_index.ini"
-
+                "$HOME/UBIS/Scripts/configuration/argoverse2/build_base_index.ini"
+                
+                
                 // "-BuildVector",
                 // "true",
                 // "--vectortype",
                 // "float",
                 // "--BaseVectorPath",
-                // "/home/lyh/datasets/embeddings/sift1m/base_embeddings.bin",
+                // "$HOME/datasets/embeddings/sift1m/base_embeddings.bin",
                 // "--CurrentListFileName",
-                // "/home/lyh/datasets/embeddings/sift1m/batches/base_embedding_ids",
+                // "$HOME/datasets/embeddings/sift1m/batches/base_embedding_ids",
                 // "--QueryVectorPath",
-                // "/home/lyh/datasets/embeddings/sift1m/query_embeddings.bin",
+                // "$HOME/datasets/embeddings/sift1m/query_embeddings.bin",
                 // "--BaseVectorSplitPath",
-                // "/home/lyh/datasets/embeddings/sift1m/query_vector_range.bin",
+                // "$HOME/datasets/embeddings/sift1m/query_vector_range.bin",
                 // "--filetype",
                 // "DEFAULT",
                 // "--ride",
@@ -107,11 +111,11 @@
                 // "--Batch",
                 // "10",                
                 // "-NewDataSetFileName",
-                // "/home/lyh/datasets/embeddings/sift1m/batches/base_embeddings",               
+                // "$HOME/datasets/embeddings/sift1m/batches/base_embeddings",               
                 // "-NewQueryDataSetFileName",
-                // "/home/lyh/datasets/embeddings/sift1m/batches/query_embeddings",                
+                // "$HOME/datasets/embeddings/sift1m/batches/query_embeddings",                
                 // "-ConfigurePath",
-                // "/home/lyh/SPFresh/Script_AE/configuration/sift1m/build_base_index.ini"
+                // "$HOME/UBIS/Scripts/configuration/sift1m/build_base_index.ini"
             ],
             "stopAtEntry": false,          
             "cwd": "${fileDirname}",

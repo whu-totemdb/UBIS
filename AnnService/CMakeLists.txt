@@ -116,8 +116,8 @@ file(GLOB_RECURSE SSD_SERVING_HDR_FILES ${AnnService}/inc/SSDServing/*.h)
 file(GLOB_RECURSE SSD_SERVING_FILES ${AnnService}/src/SSDServing/*.cpp)
 
 #new begin
-file(GLOB_RECURSE SPFRESH_HDR_FILES ${AnnService}/inc/SPFresh/*.h)#get all header files under the path
-file(GLOB_RECURSE SPFRESH_FILES ${AnnService}/src/SPFresh/*.cpp)#get all source code files under the path
+file(GLOB_RECURSE UBIS_HDR_FILES ${AnnService}/inc/UBIS/*.h)#get all header files under the path
+file(GLOB_RECURSE UBIS_FILES ${AnnService}/src/UBIS/*.cpp)#get all source code files under the path
 
 file(GLOB_RECURSE USEFULTOOL_FILES ${AnnService}/src/UsefulTool/*.cpp ${AnnService}/inc/SSDServing/*.h ${AnnService}/src/SSDServing/*.cpp)
 #new end
@@ -126,15 +126,15 @@ file(GLOB_RECURSE USEFULTOOL_FILES ${AnnService}/src/UsefulTool/*.cpp ${AnnServi
 add_library(ssdservingLib ${SSD_SERVING_HDR_FILES} ${SSD_SERVING_FILES})
 target_link_libraries(ssdservingLib SPTAGLibStatic ${Boost_LIBRARIES})
 
-# the following 9 lines add two new .exe: spfresh and usefultool. It also adds a storage engine for all .exe
+# the following 9 lines add two new .exe: ubis and usefultool. It also adds a storage engine for all .exe
 #add_executable(ssdserving ${SSD_SERVING_HDR_FILES} ${SSD_SERVING_FILES})
-add_executable(spfresh ${SPFRESH_HDR_FILES} ${SPFRESH_FILES})
+add_executable(ubis ${UBIS_HDR_FILES} ${UBIS_FILES})
 add_executable(usefultool ${USEFULTOOL_FILES} )
 #target_link_libraries(ssdserving SPTAGLibStatic ${Boost_LIBRARIES} ${RocksDB_LIBRARIES})
-target_link_libraries(spfresh SPTAGLibStatic ${Boost_LIBRARIES} ${RocksDB_LIBRARIES})
+target_link_libraries(ubis SPTAGLibStatic ${Boost_LIBRARIES} ${RocksDB_LIBRARIES})
 target_link_libraries(usefultool SPTAGLibStatic ${Boost_LIBRARIES} ${RocksDB_LIBRARIES})#SPTAGLibStatic ${Boost_LIBRARIES} ${RocksDB_LIBRARIES}
 #target_compile_definitions(ssdserving PRIVATE _exe)
-target_compile_definitions(spfresh PRIVATE _exe)
+target_compile_definitions(ubis PRIVATE _exe)
 target_compile_definitions(usefultool PRIVATE _exe)
 
 
