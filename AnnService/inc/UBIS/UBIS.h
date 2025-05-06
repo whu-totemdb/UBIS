@@ -1449,7 +1449,11 @@ namespace SPTAG {
             
                 if (!p_opts.m_fullVectorPath.empty() && fileexists(p_opts.m_fullVectorPath.c_str())) {//BuildSSDIndex -> FullVectorPath
                     //std::future<void> insert_future;
+                    int batch_counter = 0;
                     for (int m = p_opts.m_startNum; m < baseVectorSplitList.size(); m = m + step) {
+                        batch_counter++;
+                        LOG(Helper::LogLevel::LL_Info, "Current batch counter: %d \n", batch_counter);
+
                         p_index->GetDiskIndex()->ShowBranchCounter();
                         SizeType split_index = baseVectorSplitList.at(m);//split_index is the index
             
@@ -1486,6 +1490,8 @@ namespace SPTAG {
                         p_index->GetDiskIndex()->calculatePostingSizeMSE();
                         LOG(Helper::LogLevel::LL_Info, "Before %d insertion the current vector num is: %d \n", (m + step - p_opts.m_startNum) / step, p_index->GetNumSamples());
                         p_index->GetDiskIndex()->ShowPostingDistribution(m, false);
+
+                        StopWSPFresh timer;
                         std::future<void> insert_future =
                             std::async(std::launch::async, ConcurrentInsertVectors<ValueType>, p_index,
                                 insertThreads, subBaseSet, curVectorCount, insertCount, std::ref(p_opts));
@@ -1498,6 +1504,7 @@ namespace SPTAG {
                         int read_num_snapshot = 0;
 
                         if(p_opts.m_streamingUpdate){
+                            notSearch = false;
                             do {
                                 insert_status = insert_future.wait_for(std::chrono::milliseconds(p_opts.m_searchWaitMilliTime));
                                 if (insert_status == std::future_status::timeout && notSearch) {
@@ -1542,12 +1549,16 @@ namespace SPTAG {
                             do {
                                 insert_status = insert_future.wait_for(std::chrono::milliseconds(p_opts.m_smallestTimeUnit));
                                 if (insert_status == std::future_status::timeout) {
+                                    LOG(Helper::LogLevel::LL_Info, "Epoch num:%d, Current Vector num: %d, target vector num: %d, all new inserted vector num: %d, the percent is %.2lf \n", time_count, p_index->GetNumSamples(), split_index+1, insertCount, (p_index->GetNumSamples()-split_index-1+insertCount)/static_cast<double>(insertCount));
                                     ShowMemoryStatus(subBaseSet, sw.getElapsedSec());
+                                    auto t = timer.getElapsedSec();
+                                    double TPS = p_index->GetNumSamples() / t;
+                                    LOG(Helper::LogLevel::LL_Info, "TPS: %.2lf\n", TPS);
                                     time_count++;
                                     p_index->GetIndexStat(-1, false, false);
                                     p_index->GetDBStat();
 
-                                    LOG(Helper::LogLevel::LL_Info, "Epoch num:%d, Current Vector num: %d, target vector num: %d, all new inserted vector num: %d, the percent is %.2lf \n", time_count, p_index->GetNumSamples(), split_index+1, insertCount, (p_index->GetNumSamples()-split_index-1+insertCount)/static_cast<double>(insertCount));
+                                    
                                     
                                     //here: the parameter vectorSet of StableSearch is the current vector set with all current vectors
                                     if (p_opts.m_searchDuringUpdate/*BuildSSDIndex -> SearchDuringUpdate*/){
@@ -1580,7 +1591,9 @@ namespace SPTAG {
                             } while (insert_status != std::future_status::ready);
                         }
 
-                        
+                        // auto t = timer.getElapsedSec();
+                        // double TPS = insertCount / t;
+                        // LOG(Helper::LogLevel::LL_Info, "TPS: %.2lf\n", TPS);
             
                         //after insertion, show the posting ditribution(each posting's vector num)
                         //p_index->GetDiskIndex()->ShowPostingDistribution(m, true);
@@ -1606,11 +1619,32 @@ namespace SPTAG {
 
                         while(!p_index->AllFinished())
                         { 
+                            p_index->GetDiskIndex()->CheckCache(p_index->GetMemoryIndex());
                             std::this_thread::sleep_for(std::chrono::milliseconds(5000));
                             p_index->GetDBStat();
+                        }                        
+
+                        if(p_opts.m_streamingUpdate && !notSearch){
+                            auto t = timer.getElapsedSec();
+                            double TPS = insertCount / t;
+                            LOG(Helper::LogLevel::LL_Info, "TPS: %.2lf\n", TPS);
+                            pause_threads();
+                            ShowMemoryStatus(subBaseSet, sw.getElapsedSec());
+                            StableSearch(
+                                p_index,
+                                numThreads,
+                                subQuerySet,
+                                subBaseSet,
+                                searchTimes,
+                                p_opts.m_queryCountLimit,
+                                internalResultNum,
+                                truthFileName,
+                                //read_num_snapshot,
+                                p_opts,                                      
+                                (double) m);
+                            //p_index->OpenMerge();
+                            resume_threads();
                         }
-
-
 
                         curVectorCount = p_index->GetNumSamples();
                         finishedInsert += curVectorCount;
@@ -1670,6 +1704,8 @@ namespace SPTAG {
                             break;
                         }
                     }
+
+                    
 
                     //store the memory cluster-based index, the disk index is stored in the storage engine(spdk or rocksdb)
                     if (p_index->GetMemoryIndex()->SaveIndex(p_opts.m_indexDirectory + FolderSep + p_opts.m_headIndexFolder, p_opts) != ErrorCode::Success) {

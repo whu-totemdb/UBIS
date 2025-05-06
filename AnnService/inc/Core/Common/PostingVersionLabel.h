@@ -29,6 +29,7 @@ namespace SPTAG
             Dataset<std::uint64_t> m_data;//uint64_t is 8 bytes
             COMMON::FineGrainedRWLock m_countLocks;
             tbb::concurrent_hash_map<SizeType, std::string> m_vectorCache;
+            bool isChecking = false;
 
             //the lowest bit of each postion
             const int status_offset = 0;
@@ -137,7 +138,9 @@ namespace SPTAG
             }
 
             inline /*uint64_t*/void addToVectorCache(SizeType& postingID, int vector_num, std::string& newVectorInfo){
-                //std::unique_lock<std::shared_timed_mutex> lock(m_countLocks[postingID]);
+                while(isChecking){
+                    std::this_thread::sleep_for(std::chrono::microseconds(10));
+                }
 
                 tbb::concurrent_hash_map<SizeType, std::string>::accessor postingIDAccessor;
                 if (m_vectorCache.find(postingIDAccessor, postingID)) {
@@ -170,6 +173,9 @@ namespace SPTAG
             }
 
             inline std::string eraseVectorCacheInfo(SizeType& postingID, uint64_t* final_result, int m_vectorInfoSize){
+                while(isChecking){
+                    std::this_thread::sleep_for(std::chrono::microseconds(10));
+                }
                 std::string str("");
                 tbb::concurrent_hash_map<SizeType, std::string>::const_accessor postingIDAccessor;
                 //std::unique_lock<std::shared_timed_mutex> lock(m_countLocks[postingID]);
@@ -190,6 +196,23 @@ namespace SPTAG
                     *m_data[postingID] = (*final_result << count_offset) | (oldValue & (~count_range));*/
                 }
                 return str;
+            }
+
+            inline void check(std::unordered_map<SizeType, std::string>& map){
+                isChecking = true;
+                
+                tbb::concurrent_hash_map<SizeType, std::string>::const_iterator it;
+                for (it = m_vectorCache.begin(); it != m_vectorCache.end(); ++it) {
+                    tbb::concurrent_hash_map<SizeType, std::string>::const_accessor accessor;
+                    if (m_vectorCache.find(accessor, it->first)) {
+                        if(!accessor->second.empty()) {
+                            map[accessor->first] = accessor->second;
+                        }
+                        
+                    }
+                }
+                m_vectorCache.clear();
+                isChecking = false;
             }
 
             inline std::string getVectorCacheInfo(SizeType& postingID){

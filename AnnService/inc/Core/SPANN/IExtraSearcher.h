@@ -317,6 +317,8 @@ namespace SPTAG {
             virtual void ShowBranchCounter(){return;}
 
             virtual void calculatePostingSizeMSE(){return;}
+
+            virtual void CheckCache(std::shared_ptr<VectorIndex> p_index){return;}
         };
     } // SPANN
 } // SPTAG
