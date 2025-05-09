@@ -1619,7 +1619,7 @@ namespace SPTAG {
 
                         while(!p_index->AllFinished())
                         { 
-                            p_index->GetDiskIndex()->CheckCache(p_index->GetMemoryIndex());
+                            //p_index->GetDiskIndex()->CheckCache(p_index->GetMemoryIndex());
                             std::this_thread::sleep_for(std::chrono::milliseconds(5000));
                             p_index->GetDBStat();
                         }                        

@@ -1125,13 +1125,13 @@ namespace SPTAG::SPANN {
                             if(vec_count > m_postingSizeLimit){
                                 
                                 ConcurrentSplitAsync(p_index, headID);
-                                std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-                                double pass_time = (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_record_time).count() * 1.0) / 1000.0;
-                                if(pass_time > 5){
-                                    ConcurrentDetectAsync(p_index);
-                                    last_record_time = now;
-                                }
-                                return ErrorCode::Success; 
+                                // std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+                                // double pass_time = (std::chrono::duration_cast<std::chrono::milliseconds>(now - last_record_time).count() * 1.0) / 1000.0;
+                                // if(pass_time > 5){
+                                //     ConcurrentDetectAsync(p_index);
+                                //     last_record_time = now;
+                                // }
+                                // return ErrorCode::Success; 
                             }
                             m_stat.m_theSameHeadNum++;                                                       
                             return ErrorCode::Success; 
@@ -2661,11 +2661,11 @@ namespace SPTAG::SPANN {
                     queryResults.AddPoint(vectorID, distance2leaf);
                 }
 
-                std::string_view cached_vecs = m_postingVersionMap->getVectorCacheInfo(curPostingID);
+                std::string cached_vecs = m_postingVersionMap->getVectorCacheInfo(curPostingID);
                 if(!cached_vecs.empty()){
                     search_count.fetch_add(1);
-                    const uint8_t* front_addr = reinterpret_cast<const uint8_t*>(&cached_vecs.front());
-                    //uint8_t* front_addr = reinterpret_cast<uint8_t*>(&cached_vecs.front());
+                    //const uint8_t* front_addr = reinterpret_cast<const uint8_t*>(&cached_vecs.front());
+                    uint8_t* front_addr = reinterpret_cast<uint8_t*>(&cached_vecs.front());
                     int vec_num = cached_vecs.size() / m_vectorInfoSize;
                     //LOG(Helper::LogLevel::LL_Info, "posting %d, cache vector number:%d\n", curPostingID, vec_num);
                     
@@ -2673,8 +2673,8 @@ namespace SPTAG::SPANN {
                     for(int j = 0; j < vec_num; j++){
                         auto t2 = std::chrono::high_resolution_clock::now();
                         if(std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() > 6000) break;
-                        const uint8_t* vector_info = front_addr + j * m_vectorInfoSize;
-                        const SizeType vid = *(reinterpret_cast<const SizeType*>(vector_info));
+                        uint8_t* vector_info = front_addr + j * m_vectorInfoSize;
+                        SizeType vid = *(reinterpret_cast<SizeType*>(vector_info));
                         _mm_prefetch(reinterpret_cast<const char*>(vector_info + m_vectorInfoSize), _MM_HINT_T0);
                         // if(vid > m_versionMap->GetVectorNum() || vid < 0 )
                         //     continue;
