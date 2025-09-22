@@ -2,24 +2,17 @@ import numpy as np
 import struct
 import random
 import math
+import h5py
 import os
 
-folder_path = "/home/ubis/datasets/sift1m/"
+folder_path = "/home/ubis/datasets/cohere1m/"
 
-
-def fvecs_read(filename, c_contiguous=True):
-    fv = np.fromfile(filename, dtype=np.float32)
-    if fv.size == 0:
-        return np.zeros((0, 0))
-    dim = fv.view(np.int32)[0]
-    assert dim > 0
-    fv = fv.reshape(-1, 1 + dim)
-    if not all(fv.view(np.int32)[:, 0] == dim):
-        raise IOError("Non-uniform vector sizes in " + filename)
-    fv = fv[:, 1:]
-    if c_contiguous:
-        fv = fv.copy()
-    return fv
+def read_hdf5_file(file_path):
+    with h5py.File(file_path, 'r') as f:
+        base_vectors = np.array(f['train'])
+        query_vectors = np.array(f['test'])
+        print(f"Loaded: {len(base_vectors)} vectors, {len(query_vectors)} queries")
+        return base_vectors, query_vectors
 
 def write_bin_file(file_path, data_array, num, dim):
     with open(file_path, 'wb') as file:
@@ -36,16 +29,16 @@ def L2dis(base_embedding, query_embedding):
     if(len(base_embedding) != len(query_embedding)):
         return -1.0
     
-    sum = 0.0
-    for i in range(len(base_embedding)):
-        sum += math.pow(abs(base_embedding[i] - query_embedding[i]), 2)
-
-    return math.sqrt(sum)
+    base_arr = np.array(base_embedding)
+    query_arr = np.array(query_embedding)
+    
+    distance = np.linalg.norm(base_arr - query_arr)
+    return distance
 
 def genereteTruthSplittedByRide(base_embeddings, query_embeddings, query_vector_range, ride, K):
     if not os.path.exists(folder_path + "truths"):
         os.makedirs(folder_path + "truths")
-
+    
     i = 0
     old_i = 0
     truthPath = folder_path + "truths/truth_embeddings_"
@@ -152,11 +145,8 @@ def genereteTruthSplittedByRide(base_embeddings, query_embeddings, query_vector_
 
 
 if __name__ == '__main__':
-    base_file_name = folder_path + "sift_base.fvecs"
-    base_vecs = fvecs_read(base_file_name)
 
-    query_file_name = folder_path + "sift_query.fvecs"
-    query_vecs = fvecs_read(query_file_name)
+    base_vecs, query_vecs = read_hdf5_file(folder_path + "cohere-768-euclidean.hdf5")
 
     write_bin_file(folder_path+"base_embeddings.bin", base_vecs, base_vecs.shape[0], base_vecs.shape[1])
     write_bin_file(folder_path+"query_embeddings.bin", query_vecs, query_vecs.shape[0], query_vecs.shape[1])
@@ -180,5 +170,6 @@ if __name__ == '__main__':
         for qv_range in query_vector_range:
             file.write(struct.pack('i', qv_range))
 
-
-    genereteTruthSplittedByRide(base_vecs, query_vecs, query_vector_range, 100, 10)
+    ride = 10
+    K = 10
+    genereteTruthSplittedByRide(base_vecs, query_vecs, query_vector_range, ride, K)

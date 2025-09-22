@@ -65,7 +65,7 @@ def L2dis(base_embedding, query_embedding):
 def genereteTruthSplittedByRide(base_embeddings, query_embeddings, query_vector_range, ride, K):
     i = 0
     old_i = 0
-    truthPath = 'embeddings/test/truth/truth_embeddings_'
+    truthPath = 'embeddings/test/truths/truth_embeddings_'
 
     split = -1
     
@@ -439,5 +439,5 @@ def read_csv_location_data(file_path):
 
 
 if __name__ == '__main__':
-    base_file_path = 'D:/datasets/argoverse2/motion forecast/test/'
+    base_file_path = '/home/ubis/datasets/argoverse2/motion forecast/test/'
     read_csv(base_file_path)
