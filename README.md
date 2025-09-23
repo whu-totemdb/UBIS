@@ -80,7 +80,7 @@ As the dataset for updating index shifts dynamically, the ground truths are also
 ## <span id="run">Run</span>
 We provide following scripts to run UBIS:
 
-**build_initial_index.sh**: this bash script is used to build the initial base index. Given the target initial query vector number `b`, it constructs the index using corresponding vectors `query_vector_range[b]`. The details are shown as below:
+**build_initial_index.sh**: this bash script is used to build the initial base index. Given the target initial query vector number `b`, it constructs the index using corresponding `query_vector_range[b]` vectors. The details are shown as below:
 ```
 Usage: ./build_initial_index.sh [options]
 
@@ -108,6 +108,46 @@ Examples:
 ```
 An example: `./build_initial_index.sh -o true -D cohere1m -b 10 -r 10 -d 768 -c cohere1m/build_base_index.ini`. Remember to modify the data paths in the script to specify your own data.
 
+**process.sh**: this bash script is used to run UBIS. Please specify the config file path and the executable file path. For other parameters, use `./process.sh -h` to get the information.
+
+```
+Usage: ./process.sh [OPTIONS]
+
+Required Options:
+  -i INDEX_DIR      Index config file directory
+
+Configuration Options:
+  -d DIM            Vector dimension
+  -v VECTOR_PATH    Base vector file path
+  -q QUERY_PATH     Query vector file path
+  -H HEAD_FOLDER    Head index folder name
+  -p PAGE_LIMIT     Posting page limit
+  -k KV_PATH        KV storage path (RocksDB)
+  -r RESULT_NUM     Result number
+  -s START_NUM      Start number
+  -t STEP           Step size
+  -e TERMINATE_NUM  Terminate number
+  -j INSERT_THREAD  Insert thread number
+  -a APPEND_THREAD  Append thread number
+  -b BALANCE_FACTOR Balance factor
+  -l SPLIT_PATH     Base vector split path
+  -f FULL_PATH      Full vector path
+  -u TRUTH_PREFIX   Truth file prefix
+
+Execution Options:
+  -U UBIS_PATH      Set UBIS executable path (default: ubis)
+
+  -h, --help           Show this help message
+
+Example:
+  ./process.sh -i /path/to/index/dir -d 768 -v /path/base.bin -k /path/to/rocksdb -U /custom/path/ubis
+
+  ./process.sh -i /path/to/index/dir -d 1024 -U /custom/path/ubis
+```
+
+An example: `./process.sh -i $HOME/UBIS/Scripts/configuration/cohere1m -U $HOME/UBIS/Release/ubis`.
+
+**build_initial_index.sh** is executed first to get initial index and **process.sh** is then executed to perform update tasks.
 
 ## Comparisons
 We modify some codes of the existing methods to make them support the input formats above. 
