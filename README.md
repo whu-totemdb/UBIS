@@ -85,19 +85,19 @@ We provide following scripts to run UBIS:
 Usage: ./build_initial_index.sh [options]
 
 Options:
-  -D, --datasetname NAME                 Dataset name (default: cohere1m)
+  -D, --datasetname NAME                 Dataset name (default: sift1m)
   -b, --batch BATCH                      Batch size (default: 10)
   -t, --vectortype TYPE                  Vector type (default: float)
-  -B, --basevectorpath PATH              Base vector path (default: /home/ubis/datasets/cohere1m/base_embeddings.bin)
-  -L, --currentlistfile FILE             Current list file (default: /home/ubis/datasets/cohere1m/batches/base_embedding_ids)
-  -Q, --queryvectorpath PATH             Query vector path (default: /home/ubis/datasets/cohere1m/query_embeddings.bin)
-  -S, --basevectorsplitpath PATH         Base vector split path (default: /home/ubis/datasets/cohere1m/query_vector_range.bin)
+  -B, --basevectorpath PATH              Base vector path (default: /home/ubis/datasets/sift1m/base_embeddings.bin)
+  -L, --currentlistfile FILE             Current list file (default: /home/ubis/datasets/sift1m/batches/base_embedding_ids)
+  -Q, --queryvectorpath PATH             Query vector path (default: /home/ubis/datasets/sift1m/query_embeddings.bin)
+  -S, --basevectorsplitpath PATH         Base vector split path (default: /home/ubis/datasets/sift1m/query_vector_range.bin)
   -F, --filetype TYPE                    File type (default: DEFAULT)
   -r, --ride RIDE                        Ride parameter (default: 10)
   -d, --dimension DIM                    Dimension (default: 128)
   -f, --format FORMAT                    Format (default: DEFAULT)
-  -N, --newdatasetfile FILE              New dataset file (default: /home/ubis/datasets/cohere1m/batches/base_embeddings)
-  -q, --newquerydatasetfile FILE         New query dataset file (default: /home/ubis/datasets/cohere1m/batches/query_embeddings)
+  -N, --newdatasetfile FILE              New dataset file (default: /home/ubis/datasets/sift1m/batches/base_embeddings)
+  -q, --newquerydatasetfile FILE         New query dataset file (default: /home/ubis/datasets/sift1m/batches/query_embeddings)
   -c, --configpath PATH                  Configuration file path (optional)
   -o, --onlyconfig BOOLEAN               Only execute the third run with config (true/false) (default: false)
   -h, --help                             Show this help message
@@ -106,7 +106,7 @@ Examples:
   ./build_initial_index.sh -D mydataset -o false -b 10 -t float -B /path/to/base.bin -Q /path/to/query.bin
   ./build_initial_index.sh --datasetname mydata --onlyconfig false --batch 5 --vectortype float --configpath $HOME/config.ini
 ```
-An example: `./build_initial_index.sh -o true -D cohere1m -b 10 -r 10 -d 768 -c cohere1m/build_base_index.ini`. Remember to modify the data paths in the script to specify your own data.
+An example: `./build_initial_index.sh -o false -D sift1m -b 10 -r 10 -d 128 -c sift1m/build_base_index.ini`. Remember to modify the data paths in the script to specify your own data.
 
 **process.sh**: this bash script is used to run UBIS. Please specify the config file path and the executable file path. For other parameters, use `./process.sh -h` to get the information.
 
@@ -145,7 +145,7 @@ Example:
   ./process.sh -i /path/to/index/dir -d 1024 -U /custom/path/ubis
 ```
 
-An example: `./process.sh -i $HOME/UBIS/Scripts/configuration/cohere1m -U $HOME/UBIS/Release/ubis`.
+An example: `./process.sh -i $HOME/UBIS/Scripts/configuration/sift1m -U $HOME/UBIS/Release/ubis`.
 
 **build_initial_index.sh** is executed first to get initial index and **process.sh** is then executed to perform update tasks.
 
