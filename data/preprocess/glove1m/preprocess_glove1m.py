@@ -5,7 +5,7 @@ import math
 import h5py
 import os
 
-folder_path = "/home/ubis/datasets/cohere1m/"
+folder_path = "/home/ubis/datasets/glove1m/"
 
 
 def read_hdf5_file(file_path):
